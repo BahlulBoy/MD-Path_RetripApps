@@ -82,9 +82,9 @@ class DetailActivity : AppCompatActivity() {
         }
         //
     }
+    private fun test() {
 
-
-
+    }
     private fun alertDialog(context : Context) {
         android.app.AlertDialog.Builder(context)
             .setTitle("This action need login")
