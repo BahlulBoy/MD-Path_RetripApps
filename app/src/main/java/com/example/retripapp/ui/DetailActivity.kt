@@ -95,13 +95,6 @@ class DetailActivity : AppCompatActivity() {
             .create().show()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQ_CODE_ULASAN && resultCode== REQ_CODE_ULASAN) {
-
-        }
-    }
-
     override fun onResume() {
         getData(destinasiData)
         super.onResume()
