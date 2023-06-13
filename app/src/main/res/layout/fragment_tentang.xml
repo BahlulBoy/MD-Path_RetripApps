@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragment.TentangFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tentang_judul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Tentang Candi Borobudur"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tentang_isi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:minHeight="500dp"
+            android:text="Borobudur adalah sebuah situs candi Buddha yang terkenal dan ikonik di Indonesia. Terletak sekitar 40 kilometer barat laut Yogyakarta, candi ini merupakan salah satu keajaiban dunia yang wajib dikunjungi bagi para wisatawan. Borobudur merupakan kompleks candi terbesar di dunia yang terdiri dari sembilan tingkat dan lebih dari 2.000 relief serta 500 patung Buddha. Arsitektur megahnya menggambarkan keahlian dan keindahan seni Buddha pada masa lampau.\n\nBorobudur dibangun pada abad ke-8 dan merupakan pusat spiritual dan keagamaan. Setiap tahunnya, ribuan wisatawan dari seluruh penjuru dunia datang untuk mengagumi keindahan arsitektur kuno, relief yang rumit, dan pemandangan spektakuler dari atas candi."
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tentang_judul" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
