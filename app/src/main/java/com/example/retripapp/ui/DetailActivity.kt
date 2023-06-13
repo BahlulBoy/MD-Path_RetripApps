@@ -1,6 +1,5 @@
 package com.example.retripapp.ui
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -23,19 +22,22 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var viewPagerAdapter: DetailTabsAdapter
     private lateinit var destinasi: Destinasi
+    private lateinit var destinasiData: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         //set Data dari Intent ke Content
-        val destinasiData = intent.getStringExtra(DESTINASI)
+        destinasiData = "${intent.getStringExtra(DESTINASI)}"
         //set Data dari Intent ke Content
 
         //konfigurasi viewpager
         //konfigurasi viewpager
 
+        getData(destinasiData)
         //db
+        /*
         FirebaseFirestore.getInstance().collection("destinasi").document("$destinasiData")
             .get().addOnSuccessListener {snapshot->
                 destinasi = Destinasi(
@@ -62,6 +64,7 @@ class DetailActivity : AppCompatActivity() {
                     tab.text = resources.getString(TAB_TITLES[position])
                 }.attach()
             }
+        */
         //db
 
 
@@ -82,9 +85,35 @@ class DetailActivity : AppCompatActivity() {
         }
         //
     }
-    private fun test() {
-
+    private fun getData(destinasiData : String) {
+        FirebaseFirestore.getInstance().collection("destinasi").document("$destinasiData")
+            .get().addOnSuccessListener {snapshot->
+                destinasi = Destinasi(
+                    id = snapshot.id,
+                    nama = snapshot.getString("nama"),
+                    lokasi = snapshot.getString("kota"),
+                    category = snapshot.getString("category"),
+                    deskripsi = snapshot.getString("deskripsi"),
+                    img = snapshot.getString("img"),
+                    lat = snapshot.getString("lat"),
+                    lang = snapshot.getString("lang")
+                )
+                binding.destinasiName.text = destinasi.nama
+                binding.destinasiLokasi.text = destinasi.lokasi
+                Glide.with(this)
+                    .load(destinasi.img)
+                    .into(binding.imgDestinasi)
+                viewPagerAdapter = DetailTabsAdapter(this)
+                binding.vpFragment.adapter = viewPagerAdapter
+                viewPagerAdapter.addFragment(TentangFragment("${destinasi.nama}", "${destinasi.deskripsi}"))
+                viewPagerAdapter.addFragment(LokasiFragment("${destinasi.lat}", "${destinasi.lang}"))
+                viewPagerAdapter.addFragment(UlasanFragment("${destinasi.id}"))
+                TabLayoutMediator(binding.tabs, binding.vpFragment) { tab, position ->
+                    tab.text = resources.getString(TAB_TITLES[position])
+                }.attach()
+            }
     }
+
     private fun alertDialog(context : Context) {
         android.app.AlertDialog.Builder(context)
             .setTitle("This action need login")
@@ -102,6 +131,17 @@ class DetailActivity : AppCompatActivity() {
             .create().show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_CODE_ULASAN && resultCode== REQ_CODE_ULASAN) {
+
+        }
+    }
+
+    override fun onResume() {
+        getData(destinasiData)
+        super.onResume()
+    }
     companion object {
         @StringRes
         private val TAB_TITLES = intArrayOf(
