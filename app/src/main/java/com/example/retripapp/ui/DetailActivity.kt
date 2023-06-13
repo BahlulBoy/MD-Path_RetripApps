@@ -32,43 +32,8 @@ class DetailActivity : AppCompatActivity() {
         destinasiData = "${intent.getStringExtra(DESTINASI)}"
         //set Data dari Intent ke Content
 
-        //konfigurasi viewpager
-        //konfigurasi viewpager
-
         getData(destinasiData)
-        //db
-        /*
-        FirebaseFirestore.getInstance().collection("destinasi").document("$destinasiData")
-            .get().addOnSuccessListener {snapshot->
-                destinasi = Destinasi(
-                    id = snapshot.id,
-                    nama = snapshot.getString("nama"),
-                    lokasi = snapshot.getString("kota"),
-                    category = snapshot.getString("category"),
-                    deskripsi = snapshot.getString("deskripsi"),
-                    img = snapshot.getString("img"),
-                    lat = snapshot.getString("lat"),
-                    lang = snapshot.getString("lang")
-                )
-                binding.destinasiName.text = destinasi.nama
-                binding.destinasiLokasi.text = destinasi.lokasi
-                Glide.with(this)
-                    .load(destinasi.img)
-                    .into(binding.imgDestinasi)
-                viewPagerAdapter = DetailTabsAdapter(this)
-                binding.vpFragment.adapter = viewPagerAdapter
-                viewPagerAdapter.addFragment(TentangFragment("${destinasi.nama}", "${destinasi.deskripsi}"))
-                viewPagerAdapter.addFragment(LokasiFragment("${destinasi.lat}", "${destinasi.lang}"))
-                viewPagerAdapter.addFragment(UlasanFragment("${destinasi.id}"))
-                TabLayoutMediator(binding.tabs, binding.vpFragment) { tab, position ->
-                    tab.text = resources.getString(TAB_TITLES[position])
-                }.attach()
-            }
-        */
-        //db
 
-
-        //
         binding.backButton.setOnClickListener {
             onBackPressed()
         }
@@ -83,7 +48,6 @@ class DetailActivity : AppCompatActivity() {
                 Toast.makeText(this, "you not login", Toast.LENGTH_SHORT).show()
             }
         }
-        //
     }
     private fun getData(destinasiData : String) {
         FirebaseFirestore.getInstance().collection("destinasi").document("$destinasiData")
