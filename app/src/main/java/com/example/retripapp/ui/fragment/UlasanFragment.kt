@@ -11,6 +11,7 @@ import com.example.retripapp.R
 import com.example.retripapp.adapter.UlasanRcAdapter
 import com.example.retripapp.data.Ulasan
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -27,7 +28,7 @@ class UlasanFragment(val id : String) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         recycleV = view.findViewById(R.id.rc_ulasan)
         recycleV.layoutManager = LinearLayoutManager(requireContext())
-        FirebaseFirestore.getInstance().collection("destinasi").document(id).collection("review").get()
+        FirebaseFirestore.getInstance().collection("destinasi").document(id).collection("review").orderBy("date", Query.Direction.DESCENDING).get()
             .addOnSuccessListener {snapshot->
                 val listUlasan = mutableListOf<Ulasan>()
                 for (doc in snapshot) {

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.retripapp.R
 import com.example.retripapp.adapter.DetailTabsAdapter
@@ -14,25 +15,29 @@ import com.example.retripapp.databinding.ActivityDetailBinding
 import com.example.retripapp.ui.fragment.LokasiFragment
 import com.example.retripapp.ui.fragment.TentangFragment
 import com.example.retripapp.ui.fragment.UlasanFragment
+import com.example.retripapp.ui.viewmodel.DetailViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private lateinit var viewPagerAdapter: DetailTabsAdapter
-    private lateinit var destinasi: Destinasi
     private lateinit var destinasiData: String
+    private lateinit var detailViewModel: DetailViewModel
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //set Data dari Intent ke Content
         destinasiData = "${intent.getStringExtra(DESTINASI)}"
-        //set Data dari Intent ke Content
-
-        getData(destinasiData)
+        detailViewModel = ViewModelProvider(this)[DetailViewModel::class.java]
+        detailViewModel.destinasi.observe(this) { destinasi ->
+            destinasi?.let {
+                showData(it)
+            }
+        }
+        detailViewModel.loadData(destinasiData)
 
         binding.backButton.setOnClickListener {
             onBackPressed()
@@ -49,33 +54,21 @@ class DetailActivity : AppCompatActivity() {
             }
         }
     }
-    private fun getData(destinasiData : String) {
-        FirebaseFirestore.getInstance().collection("destinasi").document("$destinasiData")
-            .get().addOnSuccessListener {snapshot->
-                destinasi = Destinasi(
-                    id = snapshot.id,
-                    nama = snapshot.getString("nama"),
-                    lokasi = snapshot.getString("kota"),
-                    category = snapshot.getString("category"),
-                    deskripsi = snapshot.getString("deskripsi"),
-                    img = snapshot.getString("img"),
-                    lat = snapshot.getString("lat"),
-                    lang = snapshot.getString("lang")
-                )
-                binding.destinasiName.text = destinasi.nama
-                binding.destinasiLokasi.text = destinasi.lokasi
-                Glide.with(this)
-                    .load(destinasi.img)
-                    .into(binding.imgDestinasi)
-                viewPagerAdapter = DetailTabsAdapter(this)
-                binding.vpFragment.adapter = viewPagerAdapter
-                viewPagerAdapter.addFragment(TentangFragment("${destinasi.nama}", "${destinasi.deskripsi}"))
-                viewPagerAdapter.addFragment(LokasiFragment("${destinasi.lat}", "${destinasi.lang}"))
-                viewPagerAdapter.addFragment(UlasanFragment("${destinasi.id}"))
-                TabLayoutMediator(binding.tabs, binding.vpFragment) { tab, position ->
-                    tab.text = resources.getString(TAB_TITLES[position])
-                }.attach()
-            }
+
+    private fun showData(destinasi: Destinasi) {
+        binding.destinasiName.text = destinasi.nama
+        binding.destinasiLokasi.text = destinasi.lokasi
+        Glide.with(this)
+            .load(destinasi.img)
+            .into(binding.imgDestinasi)
+        viewPagerAdapter = DetailTabsAdapter(this)
+        binding.vpFragment.adapter = viewPagerAdapter
+        viewPagerAdapter.addFragment(TentangFragment("${destinasi.nama}", "${destinasi.deskripsi}"))
+        viewPagerAdapter.addFragment(LokasiFragment("${destinasi.lat}", "${destinasi.lang}"))
+        viewPagerAdapter.addFragment(UlasanFragment("${destinasi.id}"))
+        TabLayoutMediator(binding.tabs, binding.vpFragment) { tab, position ->
+            tab.text = resources.getString(TAB_TITLES[position])
+        }.attach()
     }
 
     private fun alertDialog(context : Context) {
@@ -95,10 +88,6 @@ class DetailActivity : AppCompatActivity() {
             .create().show()
     }
 
-    override fun onResume() {
-        getData(destinasiData)
-        super.onResume()
-    }
     companion object {
         @StringRes
         private val TAB_TITLES = intArrayOf(
